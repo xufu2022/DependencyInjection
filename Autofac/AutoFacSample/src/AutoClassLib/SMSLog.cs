@@ -39,4 +39,12 @@ namespace AutoClassLib
             Parent = parent;
         }
     }
+
+    public class BadChild : Child
+    {
+        public override string ToString()
+        {
+            return "I hate you";
+        }
+    }
 }

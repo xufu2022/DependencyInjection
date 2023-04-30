@@ -5,48 +5,64 @@ using Autofac.Core;
 using System.Reflection;
 
 var builder = new ContainerBuilder();
-//builder.RegisterType<Parent>();
-
-//builder.RegisterType<Child>()
-//    .OnActivated((IActivatedEventArgs<Child> e) =>
-//    {
-//        var p = e.Context.Resolve<Parent>();
-//        e.Instance.SetParent(p);
-//    })
-//    ;
-
-//var container = builder.Build();
-////var parent = container.Resolve<Parent>();
-//var parent = container.Resolve<Child>().Parent;
-//Console.WriteLine(parent);
-
-var assembly = Assembly.GetExecutingAssembly();
-builder.RegisterAssemblyTypes(assembly)
-    .Where(t => t.Name.EndsWith("Log"))
-    .Except<SMSLog>()
-    .Except<ConsoleLog>(c => c.As<ILog>().SingleInstance())
-    .AsSelf();
-//log apart from smslog and consolelog
-
-
-builder.RegisterAssemblyTypes(assembly)
-    .Except<SMSLog>()
-    .Where(t => t.Name.EndsWith("Log"))
-    .As(t => t.GetInterfaces()[0]);
-
-builder.RegisterAssemblyModules(typeof(Program).Assembly);
-
+builder.RegisterType<ConsoleLog>()
+    .InstancePerMatchingLifetimeScope("foo")
+    ;
+//  This means that the container will create one instance of ConsoleLog per lifetime scope that has a tag of "foo".
 var container = builder.Build();
-Console.WriteLine(container.Resolve<Child>().Parent);
-//specifies that each type should be registered with the container using its first implemented interface as the service type.
-//This means that when a component requests an instance of an interface that is implemented by one of the registered types, the container will resolve and return an instance of that type.
 
-
-public class ParentChildModule : Autofac.Module
+using (var scope1 = container.BeginLifetimeScope("foo"))
 {
-    protected override void Load(ContainerBuilder builder)
+    for (int i = 0; i < 3; i++)
     {
-        builder.RegisterType<Parent>();
-        builder.Register(c => new Child() { Parent = c.Resolve<Parent>() });
+        scope1.Resolve<ConsoleLog>();
     }
+
+    using (var scope2 = scope1.BeginLifetimeScope())
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            scope2.Resolve<ConsoleLog>();
+        }
+    }
+}
+
+builder.RegisterType<Parent>();
+builder.RegisterType<Child>()
+    .OnActivating(a =>
+    {
+        Console.WriteLine("Child activating");
+        //a.Instance.Parent = a.Context.Resolve<Parent>();
+
+        a.ReplaceInstance(new BadChild());
+    })
+    .OnActivated(a =>
+    {
+        Console.WriteLine("Child activated");
+    })
+    .OnRelease(a =>
+    {
+        Console.WriteLine("Child about to be removed");
+    });
+
+builder.RegisterType<ConsoleLog>().AsSelf();
+builder.Register<ILog>(c => c.Resolve<ConsoleLog>())
+    .OnActivating(a => a.ReplaceInstance(new SMSLog("+123456")));
+
+using (var scope = builder.Build().BeginLifetimeScope())
+{
+    var child = scope.Resolve<Child>();
+    var parent = child.Parent;
+    Console.WriteLine(child);
+    Console.WriteLine(parent);
+
+    var log = scope.Resolve<ILog>();
+    log.Write("Testing");
+}
+
+
+
+using (var scope3 = container.BeginLifetimeScope())
+{
+    scope3.Resolve<ConsoleLog>();
 }

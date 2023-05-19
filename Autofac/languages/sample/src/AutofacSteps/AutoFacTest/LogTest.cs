@@ -10,35 +10,16 @@ namespace AutoFacTest
         public void Sample1Test()
         {
             var builder = new ContainerBuilder();
+            builder.RegisterType<ConsoleLog>().As<ILog>();
 
-            //the last one win, so emaillog win
-            //builder.RegisterType<ConsoleLog>().As<ILog>().AsSelf();
-            //builder.RegisterType<EmailLog>().As<ILog>().AsSelf();
+            //var engine = new Engine(new ConsoleLog(), 123);
+            //builder.RegisterInstance(engine);
+            //builder.RegisterType<Engine>();
 
-            //the  so EmailLog win even through it is second because of PreserveExistingDefaults
-            //builder.RegisterType<EmailLog>().As<ILog>()
-            //    .AsSelf(); ;
-            //builder.RegisterType<ConsoleLog>().As<ILog>()
-            //    .As<IConsole>()
-            //    .AsSelf().PreserveExistingDefaults();
-
-            //rather than let di determine which log to use, I can determine using console
-            var log = new ConsoleLog();
-            builder.RegisterInstance(log).As<ILog>();
-
-            builder.RegisterType<Engine>();
+            //specify a lambda which take exponent context and it creates a new engine where the log is still created by that component by calling resolve, busing using component context
+            builder.Register((c => new Engine(c.Resolve<ILog>(), 123)));
             builder.RegisterType<Car>();
             var container=builder.Build();
-            //var log = new ConsoleLog();
-            //var engine = new Engine(log);
-            //var car = new Car(engine, log);
-
-            //if want to resolve consolelog, will failed
-            //the above  builder.RegisterType<ConsoleLog>().As<ILog>();
-            //without AsSelf, cannot resolve directly
-            //var log = container.Resolve<ConsoleLog>();
-            //Assert.NotNull(log);
-
 
             var car = container.Resolve<Car>();
             Assert.NotNull(car);

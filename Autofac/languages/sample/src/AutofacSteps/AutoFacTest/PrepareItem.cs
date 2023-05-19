@@ -20,11 +20,11 @@ namespace AutoFacTest
             this.log = log;
             id = new Random().Next();
         }
-        //public Engine(ILog log, int id)
-        //{
-        //    this.log = log;
-        //    this.id = id;
-        //}
+        public Engine(ILog log, int id)
+        {
+            this.log = log;
+            this.id = id;
+        }
         public void Ahead(int power)
         {
             log.Write($"Engine [{id}] ahead {power}");

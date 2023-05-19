@@ -41,6 +41,12 @@ namespace AutoFacTest
         //    this.engine = engine;
         //    this.log = new EmailLog();
         //}
+        public Car(Engine engine)
+        {
+            this.engine = engine;
+            this.log = new EmailLog();
+        }
+
         public Car(Engine engine, ILog log)
         {
             this.engine = engine;

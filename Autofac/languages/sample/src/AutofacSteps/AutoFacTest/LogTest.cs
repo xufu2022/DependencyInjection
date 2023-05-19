@@ -23,7 +23,8 @@ namespace AutoFacTest
                 .AsSelf().PreserveExistingDefaults();
 
             builder.RegisterType<Engine>();
-            builder.RegisterType<Car>();
+            //default using most populated constructive one
+            builder.RegisterType<Car>().UsingConstructor(typeof(Engine));
             var container=builder.Build();
             //var log = new ConsoleLog();
             //var engine = new Engine(log);

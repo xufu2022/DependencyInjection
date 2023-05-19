@@ -10,7 +10,18 @@ namespace AutoFacTest
         public void Sample1Test()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<ConsoleLog>().As<ILog>().AsSelf();
+
+            //the last one win, so emaillog win
+            //builder.RegisterType<ConsoleLog>().As<ILog>().AsSelf();
+            //builder.RegisterType<EmailLog>().As<ILog>().AsSelf();
+
+            //the  so EmailLog win even through it is second because of PreserveExistingDefaults
+            builder.RegisterType<EmailLog>().As<ILog>()
+                .AsSelf(); ;
+            builder.RegisterType<ConsoleLog>().As<ILog>()
+                .As<IConsole>()
+                .AsSelf().PreserveExistingDefaults();
+
             builder.RegisterType<Engine>();
             builder.RegisterType<Car>();
             var container=builder.Build();
@@ -21,7 +32,7 @@ namespace AutoFacTest
             //if want to resolve consolelog, will failed
             //the above  builder.RegisterType<ConsoleLog>().As<ILog>();
             //without AsSelf, cannot resolve directly
-            var log =container.Resolve<ConsoleLog>();
+            var log = container.Resolve<ConsoleLog>();
             Assert.NotNull(log);
 
 

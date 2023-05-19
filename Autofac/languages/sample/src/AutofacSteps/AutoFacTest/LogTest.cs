@@ -19,8 +19,6 @@ namespace AutoFacTest
             var mylist=container.Resolve<IList<int>>();
             var name = mylist.GetType().Name;
             Assert.Equal("List`1",name);
-            Console.WriteLine(name);
-
 
         }
     }

@@ -16,11 +16,15 @@ namespace AutoFacTest
             //builder.RegisterType<EmailLog>().As<ILog>().AsSelf();
 
             //the  so EmailLog win even through it is second because of PreserveExistingDefaults
-            builder.RegisterType<EmailLog>().As<ILog>()
-                .AsSelf(); ;
-            builder.RegisterType<ConsoleLog>().As<ILog>()
-                .As<IConsole>()
-                .AsSelf().PreserveExistingDefaults();
+            //builder.RegisterType<EmailLog>().As<ILog>()
+            //    .AsSelf(); ;
+            //builder.RegisterType<ConsoleLog>().As<ILog>()
+            //    .As<IConsole>()
+            //    .AsSelf().PreserveExistingDefaults();
+
+            //rather than let di determine which log to use, I can determine using console
+            var log = new ConsoleLog();
+            builder.RegisterInstance(log).As<ILog>();
 
             builder.RegisterType<Engine>();
             builder.RegisterType<Car>();
@@ -32,8 +36,8 @@ namespace AutoFacTest
             //if want to resolve consolelog, will failed
             //the above  builder.RegisterType<ConsoleLog>().As<ILog>();
             //without AsSelf, cannot resolve directly
-            var log = container.Resolve<ConsoleLog>();
-            Assert.NotNull(log);
+            //var log = container.Resolve<ConsoleLog>();
+            //Assert.NotNull(log);
 
 
             var car = container.Resolve<Car>();

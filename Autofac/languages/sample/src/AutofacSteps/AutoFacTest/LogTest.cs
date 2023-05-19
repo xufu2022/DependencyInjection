@@ -31,7 +31,7 @@ namespace AutoFacTest
             //      (pi, ctx) => "+12345678"
             //    )
             //  );
-            Random random = new Random();
+            var random = new Random();
 
             //var log = container.Resolve<ILog>();
 

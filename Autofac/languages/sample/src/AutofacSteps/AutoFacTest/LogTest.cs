@@ -10,20 +10,15 @@ namespace AutoFacTest
         public void Sample1Test()
         {
             var builder = new ContainerBuilder();
-            builder.RegisterType<ConsoleLog>().As<ILog>();
+            //Ilist<T> ==> List<T>
+            //Ilist<int> ==> List<int>
 
-            //var engine = new Engine(new ConsoleLog(), 123);
-            //builder.RegisterInstance(engine);
-            //builder.RegisterType<Engine>();
-
-            //specify a lambda which take exponent context and it creates a new engine where the log is still created by that component by calling resolve, busing using component context
-            builder.Register((c => new Engine(c.Resolve<ILog>(), 123)));
-            builder.RegisterType<Car>();
+            builder.RegisterGeneric(typeof(List<>)).As(typeof(IList<>));
             var container=builder.Build();
 
-            var car = container.Resolve<Car>();
-            Assert.NotNull(car);
-            car.Go();
+            var mylist=container.Resolve<IList<int>>();
+            var name = mylist.GetType().Name;
+            Assert.Equal("List`1",name);
 
         }
     }

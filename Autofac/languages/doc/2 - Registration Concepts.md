@@ -39,3 +39,33 @@ When you register a type directly with Autofac, i.e., it's not automatically reg
 > Assembly Scanning: 
 
 A feature where Autofac will scan an assembly and register components based on conventions, attributes, or a specified predicate.
+
+## Summary
+
+> Two step constructor
+
+-   used a container builder to actually register the components
+-   using container to resolve each required component
+
+> types are registered with
+
+- builder.RegisterType<Foo>() : Registers a component of type Foo
+- builder.RegisterType<Foo>().As<IFoo> : register component of type Foo to provide service IFoo, if register both, need AsSelf
+
+> By default, last registration for the service is the one that's used
+
+- builder.RegisterType<ConsoleLog>().As<ILog>()
+- builder.RegisterType<EmailLog>().As<ILog>()
+- container.Resolve<ILog>(); // yields an instance of EmailLog
+- use PreserveExistingDefaults to prevent changing default
+
+> Constructor with most arguments is chosen by default
+
+- builder.RegisterType<Car>().UsingConstructor(typeof(Engine),typeof(Foo));
+- can register instances instead of types (useful for testing)
+- Lambda expression components can specify exactly which constructor to call
+- builder.Register((c => new Engine(c.Resolve<ILog>(), 123)));
+- The IcomponentContext lambda argument should be used to resolve any dependencies. Do not try to use the container itself.
+- Open generic components let you serve IFoo<X> for every rquest of Foo<X>
+
+

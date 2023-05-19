@@ -10,8 +10,11 @@ namespace AutofacSamples
     {
         void Write(string message);
     }
+   public interface IConsole
+   {
 
-   public class ConsoleLog : ILog
+   }
+    public class ConsoleLog : ILog, IConsole
     {
         public void Write(string message)
         {

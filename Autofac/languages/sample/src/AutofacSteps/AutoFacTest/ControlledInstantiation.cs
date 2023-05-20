@@ -3,19 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Autofac.Features.OwnedInstances;
 
 namespace AutoFacTest
 {
 
 
-    public class ControlledInstantiation
+    public class DelayInstantiation
     {
         private class Reporting
         {
-            private Owned<ConsoleLog> log;
+            private Lazy<ConsoleLog> log;
 
-            public Reporting(Owned<ConsoleLog> log)
+            public Reporting(Lazy<ConsoleLog> log)
             {
                 if (log == null)
                 {
@@ -25,10 +24,9 @@ namespace AutoFacTest
                 Console.WriteLine("Reporting component created");
             }
 
-            public void ReportOnce()
+            public void Report()
             {
                 log.Value.Write("log started");
-                log.Dispose();
             }
         }
         [Fact]
@@ -38,10 +36,8 @@ namespace AutoFacTest
             builder.RegisterType<ConsoleLog>();
             builder.RegisterType<Reporting>();
             var c=builder.Build();
-            
             var report = c.Resolve<Reporting>();
-                report.ReportOnce();
-               // report.ReportOnce();
+                report.Report();
 
             Assert.NotNull(report);
 

@@ -41,7 +41,7 @@ namespace AutoFacTest
             
             var report = c.Resolve<Reporting>();
                 report.ReportOnce();
-               // report.ReportOnce();
+               // report.ReportOnce(); this will fail
 
             Assert.NotNull(report);
 

@@ -8,3 +8,14 @@
 -   Container will auto-initialize it with code that resolves a T
 -   Getting myField.Value constructs and returns a fully-initialized T
 
+## Controlled Instantiation
+
+-   An Owned dependency
+-   can be released by owner when no longer required
+-   particularly useful for IDisposable
+    -   Typically, Autofac handles disposal
+-   Inject and stored Owned<T>
+    -   an autofac type!
+-   Use myField.Value to access the owned object
+-   Use myField.Dispose() any time you want
+

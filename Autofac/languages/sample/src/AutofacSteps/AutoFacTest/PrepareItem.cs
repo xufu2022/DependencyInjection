@@ -9,6 +9,11 @@ namespace AutoFacTest
         {
             Console.WriteLine($"Email sent to {adminEmail} : {message}");
         }
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
     }
     public class Engine
     {

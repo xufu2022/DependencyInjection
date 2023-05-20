@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AutofacSamples
 {
-   public interface ILog
+   public interface ILog: IDisposable
     {
         void Write(string message);
     }
@@ -19,6 +19,11 @@ namespace AutofacSamples
         public void Write(string message)
         {
             Console.WriteLine(message);
+        }
+
+        public void Dispose()
+        {
+            Console.WriteLine("console logger no longer required");
         }
     }
 
@@ -34,6 +39,10 @@ namespace AutofacSamples
         public void Write(string message)
         {
             Console.WriteLine($"SMS to {phoneNumber} : {message}");
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

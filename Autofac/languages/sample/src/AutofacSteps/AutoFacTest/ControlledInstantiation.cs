@@ -8,7 +8,7 @@ namespace AutoFacTest
 {
 
 
-    public class DelayInstantiation
+    public class ControlledInstantiation
     {
         private class Reporting
         {

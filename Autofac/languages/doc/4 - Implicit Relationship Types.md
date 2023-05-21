@@ -19,3 +19,10 @@
 -   Use myField.Value to access the owned object
 -   Use myField.Dispose() any time you want
 
+## Dynamic Instantiation
+
+-   Injects an auto-generated factory for your component
+-   Allows you to Resolve<T>() without typing yourself to Autofac
+-   Inject and Store a component as Func<T>
+-   Call myField() to construct the dependency via the container
+-   The aboce will repect lifetime

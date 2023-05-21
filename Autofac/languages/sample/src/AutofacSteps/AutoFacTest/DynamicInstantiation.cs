@@ -3,32 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Autofac.Features.OwnedInstances;
 
 namespace AutoFacTest
 {
 
 
-    public class DelayInstantiation
+    public class DynamicInstantiation
     {
         private class Reporting
         {
-            private Owned<ConsoleLog> log;
+            private Func<ConsoleLog> _consoleLog;
 
-            public Reporting(Owned<ConsoleLog> log)
+            public Reporting(Func<ConsoleLog> consoleLog)
             {
-                if (log == null)
+                if (_consoleLog == null)
                 {
-                    throw new ArgumentNullException(paramName: nameof(log));
+                    throw new ArgumentNullException(paramName: nameof(_consoleLog));
                 }
-                this.log = log;
-                Console.WriteLine("Reporting component created");
+                this._consoleLog = consoleLog;
+
             }
 
-            public void ReportOnce()
+            public void Report()
             {
-                log.Value.Write("log started");
-                log.Dispose();
+                _consoleLog().Write("Reporting to console");
+                _consoleLog().Write(" And again");
             }
         }
         [Fact]
@@ -38,10 +37,8 @@ namespace AutoFacTest
             builder.RegisterType<ConsoleLog>();
             builder.RegisterType<Reporting>();
             var c=builder.Build();
-            
             var report = c.Resolve<Reporting>();
-                report.ReportOnce();
-               // report.ReportOnce(); this will fail
+                report.Report();
 
             Assert.NotNull(report);
 
